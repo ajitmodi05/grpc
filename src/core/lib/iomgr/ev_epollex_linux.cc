@@ -1442,7 +1442,14 @@ static void pollset_set_del_pollset(grpc_pollset_set* pss, grpc_pollset* ps) {
       break;
     }
   }
-  GPR_ASSERT(i != pss->pollset_count);
+  // Adding local changes below
+  // GPR_ASSERT(i != pss->pollset_count);
+  if (i != pss->pollset_count) {
+    gpr_log(GPR_ERROR, "grpc_pollset to delete not found");
+    gpr_mu_unlock(&pss->mu);
+    return;
+  }
+
   for (; i < pss->pollset_count - 1; i++) {
     pss->pollsets[i] = pss->pollsets[i + 1];
   }
